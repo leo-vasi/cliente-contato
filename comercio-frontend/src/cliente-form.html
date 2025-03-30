@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cadastro de Cliente</title>
+    <link rel="stylesheet" href="assets/css/styles.css">
+</head>
+<body class="client-management">
+<header>
+    <div class="main-container">
+        <a href="index.html" class="logo">
+            <img src="assets/img/logo-hive.png" alt="Logo">
+        </a>
+        <h1 class="page-title">Cadastrar novo Cliente</h1>
+    </div>
+</header>
+<div class="video-background">
+    <video autoplay loop muted playsinline>
+        <source src="assets/video/tecnologia.mp4" type="video/mp4">
+        Seu navegador não suporta o elemento de vídeo.
+    </video>
+</div>
+
+<!-- Formulário de cadastro -->
+<div class="client-form-container">
+    <h2>Cadastro de Cliente</h2>
+    <form id="form-registration">
+        <div class="form-group">
+            <label for="reg-name">Nome*</label>
+            <input type="text" id="reg-name" class="form-control" required pattern="[A-Za-zÀ-ú\s]+" maxlength="100" 
+                   title="Apenas letras e espaços, mínimo 3 caracteres">
+        </div>
+        <div class="form-group">
+            <label for="reg-cpf">CPF*</label>
+            <input type="text" id="reg-cpf" class="form-control" required pattern="\d{3}\.\d{3}\.\d{3}-\d{2}" 
+                   placeholder="000.000.000-00" title="Formato: 000.000.000-00">
+        </div>
+        <div class="form-group">
+            <label for="reg-birth-date">Data de Nascimento*</label>
+            <input type="date" id="reg-birth-date" class="form-control" required>
+        </div>
+        <div class="form-group">
+            <label for="reg-address">Endereço</label>
+            <input type="text" id="reg-address" class="form-control" maxlength="255">
+        </div>
+        <div class="form-actions">
+            <button type="button" class="btn btn-save" onclick="registerCliente()">Cadastrar</button>
+            <button type="button" class="btn btn-cancel" onclick="window.location.href='index.html'">Cancelar</button>
+        </div>
+    </form>
+</div>
+
+<script src="assets/js/clienteController.js"></script>
+<script>
+async function registerCliente() {
+    const cliente = {
+        nome: document.getElementById("reg-name").value.trim(),
+        cpf: document.getElementById("reg-cpf").value.trim(),
+        dataNascimento: document.getElementById("reg-birth-date").value,
+        endereco: document.getElementById("reg-address").value.trim()
+    };
+
+    if (!cliente.nome || cliente.nome.length < 3) {
+        alert("Nome deve ter pelo menos 3 caracteres");
+        return;
+    }
+
+    if (!/^\d{3}\.\d{3}\.\d{3}-\d{2}$/.test(cliente.cpf)) {
+        alert("CPF deve estar no formato 000.000.000-00");
+        return;
+    }
+
+    if (!cliente.dataNascimento) {
+        alert("Data de nascimento é obrigatória");
+        return;
+    }
+
+    try {
+        const response = await fetch('http://localhost:8080/clientes', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(cliente)
+        });
+
+        if (response.ok) {
+            alert("Cliente cadastrado com sucesso!");
+            window.location.href = "index.html";
+        } else {
+            const error = await response.json();
+            alert(error.message || "Erro ao cadastrar cliente");
+        }
+    } catch (error) {
+        console.error("Erro:", error);
+        alert("Erro ao conectar com o servidor");
+    }
+}
+
+document.getElementById("reg-cpf").addEventListener('input', function(e) {
+    let value = e.target.value.replace(/\D/g, '');
+    if (value.length > 3) value = value.replace(/^(\d{3})/, '$1.');
+    if (value.length > 7) value = value.replace(/^(\d{3}\.)(\d{3})/, '$1$2.');
+    if (value.length > 11) value = value.replace(/^(\d{3}\.)(\d{3}\.)(\d{3})(\d{2}).*/, '$1$2$3-$4');
+    e.target.value = value;
+});
+</script>
+</body>
+</html>

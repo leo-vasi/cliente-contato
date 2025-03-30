@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="assets/css/styles.css">
+    <title>Gestão de Contatos</title>
+</head>
+<body class="client-management">
+<div class="video-background">
+    <video autoplay loop muted playsinline>
+        <source src="assets/video/tecnologia.mp4" type="video/mp4">
+        Seu navegador não suporta o elemento de vídeo.
+    </video>
+</div>
+
+<header>
+    <div class="main-container">
+        <div class="logo">
+            <img src="assets/img/logo-hive.png" alt="Logo"/>
+        </div>
+        <h1 class="page-title" id="page-title">Gestão de Contatos</h1>
+        <div class="main-nav">
+            <a href="index.html" class="home-button">
+                <img src="assets/img/home-icon.png" alt="Página inicial" style="width: 40px;">
+            </a>
+        </div>
+    </div>
+</header>
+
+<div class="contact-management-container">
+    <section class="client-filters">
+        <label for="search-input">Buscar contato por ID:</label>
+        <input type="text" id="search-input" placeholder="Digite o ID do contato">
+        <button onclick="searchContato()">Buscar</button>
+        <button onclick="window.location.href='index.html'" class="btn-back">Voltar para Clientes</button>
+    </section>
+
+    <div class="btn-add-container" style="display: none;">
+        <button class="btn-add" onclick="showAddContatoForm()">Adicionar novo Contato</button>
+    </div>
+
+    <!-- Formulário de adição de contato -->
+    <div class="contact-form-container" style="display: none;">
+        <h2>Novo Contato</h2>
+        <form id="addContatoForm">
+            <div class="form-group">
+                <label for="add-tipo">Tipo*</label>
+                <select id="add-tipo" class="form-control" required>
+                    <option value="">Selecione...</option>
+                    <option value="Telefone">Telefone</option>
+                    <option value="Email">E-mail</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="add-valor">Valor*</label>
+                <input type="text" id="add-valor" class="form-control" required>
+            </div>
+            <div class="form-group">
+                <label for="add-observacao">Observação</label>
+                <textarea id="add-observacao" class="form-control"></textarea>
+            </div>
+            <div class="form-actions">
+                <button type="button" class="btn btn-save" onclick="addContato()">Salvar</button>
+                <button type="button" class="btn btn-cancel" onclick="closeAddContatoForm()">Cancelar</button>
+            </div>
+        </form>
+    </div>
+
+    <!-- Tabela de contatos -->
+    <table class="clients-table">
+        <thead></thead>
+        <tbody id="contatos"></tbody>
+    </table>
+
+    <!-- Formulário de edição de contato -->
+    <div class="contact-form-container" style="display: none;">
+        <h2>Editar Contato</h2>
+        <form id="editContatoForm">
+            <input type="hidden" id="edit-contato-id">
+            <div class="form-group">
+                <label for="edit-tipo">Tipo*</label>
+                <select id="edit-tipo" class="form-control" required>
+                    <option value="Telefone">Telefone</option>
+                    <option value="Email">E-mail</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="edit-valor">Valor*</label>
+                <input type="text" id="edit-valor" class="form-control" required>
+            </div>
+            <div class="form-group">
+                <label for="edit-observacao">Observação</label>
+                <textarea id="edit-observacao" class="form-control"></textarea>
+            </div>
+            <div class="form-actions">
+                <button type="button" class="btn btn-save" onclick="updateContato()">Salvar Alterações</button>
+                <button type="button" class="btn btn-cancel" onclick="closeEditContatoForm()">Cancelar</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script src="assets/js/contatoController.js"></script>
+
+<script>
+    function redirectToContatoForm() {
+        const urlParams = new URLSearchParams(window.location.search);
+        const clienteId = urlParams.get('clienteId');
+        if (clienteId) {
+            window.location.href = `contato-form.html?clienteId=${clienteId}`;
+        } else {
+            alert("Erro: Cliente não identificado");
+        }
+    }
+    
+    function showAddContatoForm() {
+        document.querySelector('.contact-form-container').style.display = 'block';
+        document.querySelector('.btn-add-container').style.display = 'none';
+    }
+    
+    function closeAddContatoForm() {
+        document.querySelector('.contact-form-container').style.display = 'none';
+        document.querySelector('.btn-add-container').style.display = 'block';
+    }
+    
+    function closeEditContatoForm() {
+        document.querySelectorAll('.contact-form-container')[1].style.display = 'none';
+    }
+    
+    document.addEventListener('DOMContentLoaded', () => {
+        const urlParams = new URLSearchParams(window.location.search);
+        const clienteId = urlParams.get('clienteId');
+        if (clienteId) {
+            document.getElementById('page-title').textContent = `Contatos do Cliente ${clienteId}`;
+            document.querySelector('.btn-add-container').style.display = 'block';
+            getContatosByClienteId(clienteId);
+        } else {
+            document.getElementById('page-title').textContent = 'Todos os Contatos';
+            getAllContatos();
+        }
+    });
+</script>
+
+</body>
+</html>

@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="assets/css/styles.css">
+    <title>Gestão de Clientes</title>
+</head>
+<body class="client-management">
+<div class="video-background">
+    <video autoplay loop muted playsinline>
+        <source src="assets/video/tecnologia.mp4" type="video/mp4">
+        Seu navegador não suporta o elemento de vídeo.
+    </video>
+</div>
+
+<header>
+    <div class="main-container">
+        <div class="logo">
+            <img src="assets/img/logo-hive.png" alt="Logo"/>
+        </div>
+        <h1 class="page-title">Gestão de Clientes</h1>
+        <div class="main-nav">
+            <a href="index.html" class="home-button">
+                <img src="assets/img/home-icon.png" alt="Página inicial" style="width: 40px;">
+            </a>
+        </div>
+    </div>
+</header>
+
+<!-- Barra de pesquisa -->
+<section class="client-filters">
+    <label for="search-option">Buscar clientes:</label>
+    <select id="search-option">
+        <option value="id">Por ID</option>
+        <option value="nome">Por Nome</option>
+        <option value="cpf">Por CPF</option>
+    </select>
+    <input type="text" id="search-input" placeholder="Digite aqui">
+    <button onclick="searchCliente()">Buscar</button>
+</section>
+
+<div class="btn-add-container">
+    <button class="btn-add" onclick="window.location.href='cliente-form.html'">Adicionar novo Cliente</button>
+</div>
+
+<div class="btn-add-container">
+    <button class="btn-add" onclick="window.location.href='contato-index.html'">Visão Geral dos Contatos</button>
+</div>
+
+<!-- Resultado da busca -->
+<div class="search-results"></div>
+
+<!-- Formulário de edição -->
+<div class="client-form-container" style="display: none;">
+    <h2>Editar Cliente</h2>
+    <form id="formedit">
+        <input type="hidden" id="edit-id">
+        <div class="form-group">
+            <label for="edit-name">Nome Completo</label>
+            <input type="text" id="edit-name" class="form-control" required 
+                   maxlength="100" 
+                   title="Nome não pode estar em branco e deve ter no máximo 100 caracteres">
+        </div>
+        <div class="form-group">
+            <label for="edit-cpf">CPF</label>
+            <input type="text" id="edit-cpf" class="form-control" required 
+                   pattern="\d{3}\.\d{3}\.\d{3}-\d{2}" 
+                   title="CPF deve estar no formato 000.000.000-00">
+        </div>
+        <div class="form-group">
+            <label for="edit-birth-date">Data de Nascimento</label>
+            <input type="date" id="edit-birth-date" class="form-control" required>
+        </div>
+        <div class="form-group">
+            <label for="edit-address">Endereço</label>
+            <input type="text" id="edit-address" class="form-control" 
+                   maxlength="255" 
+                   title="Endereço deve ter no máximo 255 caracteres">
+        </div>
+        <div class="form-actions">
+            <button type="button" class="btn btn-save" onclick="updateCliente()">Salvar Alterações</button>
+            <button type="button" class="btn btn-cancel" onclick="closeEditForm()">Cancelar</button>
+        </div>
+    </form>
+</div>
+
+<!-- Tabela de clientes -->
+<table class="clients-table">
+    <thead>
+    </thead>
+    <tbody id="clientes"></tbody>
+</table>
+
+<script src="assets/js/clienteController.js"></script>
+</body>
+</html>
